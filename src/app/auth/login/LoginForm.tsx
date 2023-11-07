@@ -1,7 +1,7 @@
 "use client";
 
-import { FormEvent, FormHTMLAttributes, useState } from "react";
-import { useRouter } from "next/navigation";
+import { FormEvent, FormHTMLAttributes, useEffect, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { z } from "zod";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -19,49 +19,45 @@ import { register } from "module";
 import { Button } from "@/components/ui/button";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { postData } from "@/lib/api";
-import { SignUpSchemaType, SignUpSchema } from "@/lib/validation";
+import { LoginSchemaType, LoginSchema } from "@/lib/validation";
+import { signIn } from "next-auth/react";
 
-export default function SignUpForm() {
-  const signupForm = useForm<SignUpSchemaType>({
-    resolver: zodResolver(SignUpSchema),
-    defaultValues: { email: "", password: "", fullName: "" },
+export default function LoginForm() {
+  const signupForm = useForm<LoginSchemaType>({
+    resolver: zodResolver(LoginSchema),
+    defaultValues: { email: "", password: "" },
   });
 
   const queryClient = useQueryClient();
   const mutation = useMutation({
-    mutationFn: (data: SignUpSchemaType) => postData("/api/auth/signup", data),
+    mutationFn: (data: LoginSchemaType) => postData("/api/auth/login", data),
     onSuccess: () => {
       // Invalidate and refetch
       queryClient.invalidateQueries({ queryKey: ["auth"] });
     },
   });
 
-  const router = useRouter();
+  const query = useSearchParams();
 
-  const handleSignUp: SubmitHandler<SignUpSchemaType> = async (data) => {
-    mutation.mutate(data);
+  useEffect(() => {
+    console.log(query.get("error"));
+  }, [query]);
+
+  const handleLogin: SubmitHandler<LoginSchemaType> = async (data) => {
+    await signIn("credentials", {
+      callbackUrl: "/",
+      redirect: true,
+      ...data,
+    });
   };
 
   return (
     <div>
       <Form {...signupForm}>
         <form
-          onSubmit={signupForm.handleSubmit(handleSignUp)}
+          onSubmit={signupForm.handleSubmit(handleLogin)}
           className="space-y-5"
         >
-          <FormField
-            control={signupForm.control}
-            name="fullName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Full Name</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
           <FormField
             control={signupForm.control}
             name="email"
@@ -89,7 +85,7 @@ export default function SignUpForm() {
             )}
           />
           <Button type="submit" className="w-full" size="lg">
-            Sign up
+            Login
           </Button>
         </form>
       </Form>
