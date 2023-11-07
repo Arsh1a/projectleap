@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import { getServerSession } from "next-auth";
 import "./globals.css";
-import SessionProvider from "@/components/SessionProvider";
-import ReactQueryProvider from "@/components/ReactQueryProvider";
+import SessionProvider from "@/components/session-provider";
+import ReactQueryProvider from "@/components/react-query-provider";
+import { Toaster } from "@/components/ui/toaster";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -26,7 +27,10 @@ export default async function RootLayout({
     <html lang="en">
       <body className={poppins.className}>
         <SessionProvider session={session}>
-          <ReactQueryProvider>{children}</ReactQueryProvider>
+          <ReactQueryProvider>
+            {children}
+            <Toaster />
+          </ReactQueryProvider>
         </SessionProvider>
       </body>
     </html>

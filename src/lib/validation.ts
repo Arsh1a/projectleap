@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 const emailValidation = z.string().email();
-const passwordValidation = z.string().min(3).max(256);
+const passwordValidation = z.string().min(8).max(256);
 
 export const SignUpSchema = z.object({
   fullName: z.string().min(3).max(60),

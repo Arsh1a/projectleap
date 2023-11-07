@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, FormHTMLAttributes, useState } from "react";
+import { FormEvent, FormHTMLAttributes, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { z } from "zod";
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -20,6 +20,8 @@ import { Button } from "@/components/ui/button";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { postData } from "@/lib/api";
 import { SignUpSchemaType, SignUpSchema } from "@/lib/validation";
+import { useToast } from "@/components/ui/use-toast";
+import { ToastAction } from "@/components/ui/toast";
 
 export default function SignUpForm() {
   const signupForm = useForm<SignUpSchemaType>({
@@ -28,11 +30,32 @@ export default function SignUpForm() {
   });
 
   const queryClient = useQueryClient();
+  const { toast } = useToast();
   const mutation = useMutation({
     mutationFn: (data: SignUpSchemaType) => postData("/api/auth/signup", data),
     onSuccess: () => {
       // Invalidate and refetch
       queryClient.invalidateQueries({ queryKey: ["auth"] });
+      router.push("/dashboard");
+    },
+    onError: () => {
+      const timeout = setTimeout(() => {
+        toast({
+          variant: "destructive",
+          title: "User already exists.",
+          description: "If you are the owner of the account, you can login.",
+          action: (
+            <ToastAction
+              altText="Try again"
+              onClick={() => router.push("/auth/login")}
+            >
+              Login
+            </ToastAction>
+          ),
+        });
+      }, 0);
+
+      return () => clearTimeout(timeout);
     },
   });
 
@@ -41,6 +64,8 @@ export default function SignUpForm() {
   const handleSignUp: SubmitHandler<SignUpSchemaType> = async (data) => {
     mutation.mutate(data);
   };
+
+  useEffect(() => {}, []);
 
   return (
     <div>
@@ -82,13 +107,18 @@ export default function SignUpForm() {
               <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input {...field} />
+                  <Input type="password" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <Button type="submit" className="w-full" size="lg">
+          <Button
+            type="submit"
+            className="w-full"
+            size="lg"
+            isLoading={mutation.isPending}
+          >
             Sign up
           </Button>
         </form>

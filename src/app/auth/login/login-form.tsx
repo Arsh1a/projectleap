@@ -1,54 +1,64 @@
 "use client";
-
-import { FormEvent, FormHTMLAttributes, useEffect, useState } from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { z } from "zod";
+import { useRouter } from "next/navigation";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { register } from "module";
 import { Button } from "@/components/ui/button";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { postData } from "@/lib/api";
 import { LoginSchemaType, LoginSchema } from "@/lib/validation";
 import { signIn } from "next-auth/react";
+import { useToast } from "@/components/ui/use-toast";
+import { useState } from "react";
 
 export default function LoginForm() {
+  const [formLoading, setFormLoading] = useState(false);
+
   const signupForm = useForm<LoginSchemaType>({
     resolver: zodResolver(LoginSchema),
     defaultValues: { email: "", password: "" },
   });
 
-  const queryClient = useQueryClient();
-  const mutation = useMutation({
-    mutationFn: (data: LoginSchemaType) => postData("/api/auth/login", data),
-    onSuccess: () => {
-      // Invalidate and refetch
-      queryClient.invalidateQueries({ queryKey: ["auth"] });
-    },
-  });
+  const router = useRouter();
+  const { toast } = useToast();
 
-  const query = useSearchParams();
-
-  useEffect(() => {
-    console.log(query.get("error"));
-  }, [query]);
+  //This is little messy cause we have to use next-auth signIn instead of tanstack query.
 
   const handleLogin: SubmitHandler<LoginSchemaType> = async (data) => {
-    await signIn("credentials", {
-      callbackUrl: "/",
-      redirect: true,
+    setFormLoading(true);
+    const signInResponse = await signIn("credentials", {
+      redirect: false,
       ...data,
     });
+
+    if (signInResponse?.error) {
+      setFormLoading(false);
+      if (signInResponse?.error === "CredentialsSignin") {
+        toast({
+          variant: "destructive",
+          title: "Invalid email or password.",
+          description:
+            "Please double-check your login credentials and try again.",
+        });
+        return;
+      }
+
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: "There was a problem with your request.",
+      });
+      return;
+    }
+
+    setFormLoading(false);
+    router.push("/dashboard");
   };
 
   return (
@@ -78,13 +88,18 @@ export default function LoginForm() {
               <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input {...field} />
+                  <Input type="password" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <Button type="submit" className="w-full" size="lg">
+          <Button
+            type="submit"
+            className="w-full"
+            size="lg"
+            isLoading={formLoading}
+          >
             Login
           </Button>
         </form>
