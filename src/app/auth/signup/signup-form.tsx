@@ -22,6 +22,10 @@ import { postData } from "@/lib/api";
 import { SignUpSchemaType, SignUpSchema } from "@/lib/validation";
 import { useToast } from "@/components/ui/use-toast";
 import { ToastAction } from "@/components/ui/toast";
+import { signIn } from "next-auth/react";
+import { Github } from "lucide-react";
+import OAuthButtons from "../oauth-buttons";
+import Link from "next/link";
 
 export default function SignUpForm() {
   const signupForm = useForm<SignUpSchemaType>({
@@ -69,6 +73,13 @@ export default function SignUpForm() {
 
   return (
     <div>
+      <p className="text-sm mb-4 text-center">
+        Already have an account?{" "}
+        <Link className="underline" href={"/auth/login"}>
+          Login
+        </Link>
+        .
+      </p>
       <Form {...signupForm}>
         <form
           onSubmit={signupForm.handleSubmit(handleSignUp)}
@@ -116,6 +127,7 @@ export default function SignUpForm() {
           <Button
             type="submit"
             className="w-full"
+            variant="secondary"
             size="lg"
             isLoading={mutation.isPending}
           >
@@ -123,6 +135,7 @@ export default function SignUpForm() {
           </Button>
         </form>
       </Form>
+      <OAuthButtons type="signup" />
     </div>
   );
 }

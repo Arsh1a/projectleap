@@ -16,6 +16,8 @@ import { LoginSchemaType, LoginSchema } from "@/lib/validation";
 import { signIn } from "next-auth/react";
 import { useToast } from "@/components/ui/use-toast";
 import { useState } from "react";
+import OAuthButtons from "../oauth-buttons";
+import Link from "next/link";
 
 export default function LoginForm() {
   const [formLoading, setFormLoading] = useState(false);
@@ -63,6 +65,13 @@ export default function LoginForm() {
 
   return (
     <div>
+      <p className="text-sm mb-4 text-center">
+        New to Project Leap?{" "}
+        <Link className="underline" href={"/auth/signup"}>
+          Login
+        </Link>
+        .
+      </p>
       <Form {...signupForm}>
         <form
           onSubmit={signupForm.handleSubmit(handleLogin)}
@@ -97,6 +106,7 @@ export default function LoginForm() {
           <Button
             type="submit"
             className="w-full"
+            variant="secondary"
             size="lg"
             isLoading={formLoading}
           >
@@ -104,6 +114,7 @@ export default function LoginForm() {
           </Button>
         </form>
       </Form>
+      <OAuthButtons type="login" />
     </div>
   );
 }
