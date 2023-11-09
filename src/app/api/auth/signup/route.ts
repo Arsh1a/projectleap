@@ -1,31 +1,32 @@
-import { db } from "@/db";
-import { users } from "@/db/schema";
 import { SignUpSchema } from "@/lib/validation";
 import bcrypt from "bcryptjs";
-import { eq, exists } from "drizzle-orm";
 import { NextResponse } from "next/server";
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
 
 export async function POST(req: Request) {
   try {
-    const { email, password, fullName } = await req.json();
+    const { email, password, name } = await req.json();
 
     //Validation
     const validation = await SignUpSchema.safeParseAsync({
       email,
       password,
-      fullName,
+      name,
     });
     if (!validation.success) {
       const { errors } = validation.error;
       return NextResponse.json({ error: errors }, { status: 400 });
     }
 
-    const userExists = await db
-      .select()
-      .from(users)
-      .where(exists(db.select().from(users).where(eq(users.email, email))));
+    const userExists = await prisma.user.findUnique({
+      where: {
+        email,
+      },
+    });
 
-    if (userExists.length > 0) {
+    if (userExists) {
       return NextResponse.json(
         { error: "User already exists." },
         { status: 400 }
@@ -37,13 +38,15 @@ export async function POST(req: Request) {
     const hashedPassword = bcrypt.hashSync(password, salt);
 
     //Insert to DB
-    await db.insert(users).values({
-      email,
-      password: hashedPassword,
-      fullName,
+    await prisma.user.create({
+      data: {
+        name,
+        email,
+        password: hashedPassword,
+      },
     });
 
-    return NextResponse.json({ email, password });
+    return NextResponse.json({ email, name });
   } catch (err) {
     return NextResponse.json(
       { error: "An error occurred while processing your request." },

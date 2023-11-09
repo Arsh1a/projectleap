@@ -1,13 +1,13 @@
-import { db } from "@/db";
-import { users } from "@/db/schema";
-import { LoginSchema } from "@/lib/validation";
-import { eq } from "drizzle-orm";
 import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GitHubProvider from "next-auth/providers/github";
-import bcrypt from "bcryptjs";
+import { PrismaAdapter } from "@auth/prisma-adapter";
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
 
 export const handler = NextAuth({
+  adapter: PrismaAdapter(prisma),
   pages: {
     signIn: "/auth/login",
   },
@@ -18,6 +18,7 @@ export const handler = NextAuth({
     GitHubProvider({
       clientId: process.env.GITHUB_CLIENT_ID ?? "",
       clientSecret: process.env.GITHUB_CLIENT_SECRET ?? "",
+      allowDangerousEmailAccountLinking: true,
     }),
     CredentialsProvider({
       // The name to display on the sign in form (e.g. 'Sign in with...')
@@ -26,7 +27,9 @@ export const handler = NextAuth({
       // You can specify whatever fields you are expecting to be submitted.
       // e.g. domain, username, password, 2FA token, etc.
       // You can pass any HTML attribute to the <input> tag through the object.
+
       credentials: {
+        name: {},
         email: {},
         password: {},
       },

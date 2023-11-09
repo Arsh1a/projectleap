@@ -30,7 +30,7 @@ import Link from "next/link";
 export default function SignUpForm() {
   const signupForm = useForm<SignUpSchemaType>({
     resolver: zodResolver(SignUpSchema),
-    defaultValues: { email: "", password: "", fullName: "" },
+    defaultValues: { email: "", password: "", name: "" },
   });
 
   const queryClient = useQueryClient();
@@ -41,6 +41,23 @@ export default function SignUpForm() {
       // Invalidate and refetch
       queryClient.invalidateQueries({ queryKey: ["auth"] });
       router.push("/dashboard");
+      const timeout = setTimeout(() => {
+        toast({
+          variant: "default",
+          title: "Account created succesfuly.",
+          description: "Please login with your credintials.",
+          action: (
+            <ToastAction
+              altText="Try again"
+              onClick={() => router.push("/auth/login")}
+            >
+              Login
+            </ToastAction>
+          ),
+        });
+      }, 0);
+
+      return () => clearTimeout(timeout);
     },
     onError: () => {
       const timeout = setTimeout(() => {
@@ -69,13 +86,11 @@ export default function SignUpForm() {
     mutation.mutate(data);
   };
 
-  useEffect(() => {}, []);
-
   return (
     <div>
       <p className="text-sm mb-4 text-center">
         Already have an account?{" "}
-        <Link className="underline" href={"/auth/login"}>
+        <Link className="underline font-semibold" href={"/auth/login"}>
           Login
         </Link>
         .
@@ -87,7 +102,7 @@ export default function SignUpForm() {
         >
           <FormField
             control={signupForm.control}
-            name="fullName"
+            name="name"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Full Name</FormLabel>

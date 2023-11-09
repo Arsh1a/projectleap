@@ -1,9 +1,9 @@
-import { db } from "@/db";
-import { users } from "@/db/schema";
 import { LoginSchema } from "@/lib/validation";
+import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
-import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
+
+const prisma = new PrismaClient();
 
 export async function POST(req: Request) {
   try {
@@ -19,9 +19,11 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: errors }, { status: 400 });
     }
 
-    const user = (
-      await db.select().from(users).where(eq(users.email, email))
-    )[0];
+    const user = await prisma.user.findUnique({
+      where: {
+        email,
+      },
+    });
 
     if (!user) {
       return NextResponse.json(
@@ -39,7 +41,7 @@ export async function POST(req: Request) {
       );
     }
 
-    return NextResponse.json({ email: user.email });
+    return NextResponse.json({ email: user.email, name: user.name });
   } catch (err) {
     return NextResponse.json(
       { error: "An error occurred while processing your request." },

@@ -67,8 +67,8 @@ export default function LoginForm() {
     <div>
       <p className="text-sm mb-4 text-center">
         New to Project Leap?{" "}
-        <Link className="underline" href={"/auth/signup"}>
-          Login
+        <Link className="underline font-semibold" href={"/auth/signup"}>
+          Sign up
         </Link>
         .
       </p>
