@@ -2,6 +2,7 @@ import { Container } from "@/components/ui/container";
 import { Logo } from "@/components/ui/logo";
 import DashboardNavbar from "./dashboard-navbar";
 import { getServerSession } from "next-auth";
+import DashboardAside from "./dashboard-aside";
 
 export default async function DashboardLayout({
   children,
@@ -10,14 +11,12 @@ export default async function DashboardLayout({
 }) {
   const session = await getServerSession();
 
-  console.log("session", session);
-
   return (
-    <>
+    <div>
       <DashboardNavbar
         profilePicture={session!.user!.image}
         name={session!.user!.name!}
       />
-    </>
+    </div>
   );
 }

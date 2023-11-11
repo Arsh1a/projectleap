@@ -1,7 +1,9 @@
 import { Logo } from "@/components/ui/logo";
-import Image from "next/image";
 import React from "react";
 import UserDropdown from "./user-dropdown";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import ProjectPopover from "./project-popover";
+import AvatarWwithNameInitials from "@/components/avatar-with-name-initials";
 
 interface Props {
   profilePicture: string | null | undefined;
@@ -10,19 +12,14 @@ interface Props {
 
 const DashboardNavbar = ({ profilePicture, name }: Props) => {
   return (
-    <nav className="py-4 px-6 m-6 flex items-center border rounded-l-3xl rounded-r-[5rem]">
+    <nav className="flex items-center border-b px-4 py-2">
       <Logo />
-      <div className="ml-auto flex items-center">
+      <div className="ml-auto flex gap-4 items-center">
+        <ProjectPopover />
         <UserDropdown
           label={name}
           trigger={
-            <Image
-              className="rounded-full"
-              src={profilePicture ?? "/portrait.png"}
-              alt="Profile Picture"
-              height={50}
-              width={50}
-            />
+            <AvatarWwithNameInitials avatar={profilePicture} name={name} />
           }
         />
       </div>

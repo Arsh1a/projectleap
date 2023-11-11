@@ -142,7 +142,6 @@ export default function SignUpForm() {
           <Button
             type="submit"
             className="w-full"
-            variant="secondary"
             size="lg"
             isLoading={mutation.isPending}
           >
@@ -150,7 +149,7 @@ export default function SignUpForm() {
           </Button>
         </form>
       </Form>
-      <OAuthButtons type="signup" />
+      <OAuthButtons />
     </div>
   );
 }

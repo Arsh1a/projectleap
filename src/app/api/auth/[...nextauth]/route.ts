@@ -2,17 +2,33 @@ import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GitHubProvider from "next-auth/providers/github";
 import { PrismaAdapter } from "@auth/prisma-adapter";
-import { PrismaClient } from "@prisma/client";
+import { AdapterUser } from "next-auth/adapters";
+import db from "@/lib/db";
+import { AuthOptions } from "next-auth";
 
-const prisma = new PrismaClient();
-
-export const handler = NextAuth({
-  adapter: PrismaAdapter(prisma),
+export const authOptions: AuthOptions = {
+  adapter: PrismaAdapter(db),
   pages: {
     signIn: "/auth/login",
   },
+  secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: "jwt",
+  },
+  callbacks: {
+    async signIn({ user, account }) {
+      if (!(user as AdapterUser).emailVerified && account?.type === "oauth") {
+        await db.user.update({
+          where: {
+            id: user.id,
+          },
+          data: {
+            emailVerified: new Date(),
+          },
+        });
+      }
+      return true;
+    },
   },
   providers: [
     GitHubProvider({
@@ -54,6 +70,8 @@ export const handler = NextAuth({
       },
     }),
   ],
-});
+};
+
+export const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };

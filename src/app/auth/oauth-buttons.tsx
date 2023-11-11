@@ -2,27 +2,26 @@ import { Button } from "@/components/ui/button";
 import { Seperator } from "@/components/ui/seperator";
 import { Github } from "lucide-react";
 import { signIn } from "next-auth/react";
-import React from "react";
+import React, { useState } from "react";
 
-interface Props {
-  type: "signup" | "login";
-}
+interface Props {}
 
-const OAuthButtons = ({ type }: Props) => {
+const OAuthButtons = ({}: Props) => {
+  const [isLoading, setIsLoading] = useState(false);
   return (
     <div className="w-full">
       <Seperator text="or" />
       <Button
+        isLoading={isLoading}
         variant="outline"
         className="w-full py-6"
-        onClick={() =>
-          signIn("github", { callbackUrl: "/dashboard", redirect: false })
-        }
+        onClick={() => {
+          setIsLoading(true);
+          signIn("github", { callbackUrl: "/dashboard", redirect: false });
+        }}
       >
-        <Github />
-        <span className="ml-1">
-          {type === "login" ? "Login" : "Sign up"} in with Github
-        </span>
+        <Github size={16} />
+        <span className="ml-1 text-base">Continue with Github</span>
       </Button>
     </div>
   );

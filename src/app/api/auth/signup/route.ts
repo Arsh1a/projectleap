@@ -2,8 +2,7 @@ import { SignUpSchema } from "@/lib/validation";
 import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import db from "@/lib/db";
 
 export async function POST(req: Request) {
   try {
@@ -20,7 +19,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: errors }, { status: 400 });
     }
 
-    const userExists = await prisma.user.findUnique({
+    const userExists = await db.user.findUnique({
       where: {
         email,
       },
@@ -38,7 +37,7 @@ export async function POST(req: Request) {
     const hashedPassword = bcrypt.hashSync(password, salt);
 
     //Insert to DB
-    await prisma.user.create({
+    await db.user.create({
       data: {
         name,
         email,

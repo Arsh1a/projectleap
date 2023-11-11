@@ -106,7 +106,6 @@ export default function LoginForm() {
           <Button
             type="submit"
             className="w-full"
-            variant="secondary"
             size="lg"
             isLoading={formLoading}
           >
@@ -114,7 +113,7 @@ export default function LoginForm() {
           </Button>
         </form>
       </Form>
-      <OAuthButtons type="login" />
+      <OAuthButtons />
     </div>
   );
 }

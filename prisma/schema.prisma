@@ -41,8 +41,10 @@ model User {
     emailVerified DateTime?
     image         String?
     password      String?
-    accounts      Account[]
-    sessions      Session[]
+
+    accounts Account[]
+    sessions Session[]
+    projects Project[]
 }
 
 model VerificationToken {
@@ -51,4 +53,29 @@ model VerificationToken {
     expires    DateTime
 
     @@unique([identifier, token])
+}
+
+model Project {
+    id          String    @id @default(cuid())
+    name        String
+    description String?
+    deadline    DateTime?
+
+    userId  String
+    ownerId String
+
+    users User[]
+    tasks Task[]
+}
+
+model Task {
+    id          String    @id @default(cuid())
+    title       String
+    description String?
+    status      String
+    dueDate     DateTime?
+    priority    Int?
+
+    projectId String
+    project   Project @relation(fields: [projectId], references: [id])
 }

@@ -1,9 +1,7 @@
+import db from "@/lib/db";
 import { LoginSchema } from "@/lib/validation";
-import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
-
-const prisma = new PrismaClient();
 
 export async function POST(req: Request) {
   try {
@@ -19,7 +17,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: errors }, { status: 400 });
     }
 
-    const user = await prisma.user.findUnique({
+    const user = await db.user.findUnique({
       where: {
         email,
       },
@@ -32,7 +30,9 @@ export async function POST(req: Request) {
       );
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    //Because we have oauth accounts that dont use password and password is optional, we have to force typescript into accepting that
+    //password will be always available because we using this login route only for users with password
+    const isPasswordValid = await bcrypt.compare(password, user.password!);
 
     if (!isPasswordValid) {
       return NextResponse.json(
