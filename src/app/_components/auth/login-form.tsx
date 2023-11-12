@@ -16,7 +16,7 @@ import { LoginSchemaType, LoginSchema } from "@/lib/validation";
 import { signIn } from "next-auth/react";
 import { useToast } from "@/components/ui/use-toast";
 import { useState } from "react";
-import OAuthButtons from "../oauth-buttons";
+import OAuthButtons from "./oauth-buttons";
 import Link from "next/link";
 
 export default function LoginForm() {

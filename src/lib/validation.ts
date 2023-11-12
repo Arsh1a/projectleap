@@ -15,3 +15,13 @@ export const LoginSchema = z.object({
   password: passwordValidation,
 });
 export type LoginSchemaType = z.infer<typeof LoginSchema>;
+
+export const ProjectOperationSchema = z.object({
+  name: z.string().min(3).max(60),
+  description: z.string().min(3).max(60).optional(),
+  deadline: z
+    .string()
+    .transform((str) => new Date(str))
+    .optional(),
+});
+export type ProjectOperationType = z.infer<typeof ProjectOperationSchema>;
