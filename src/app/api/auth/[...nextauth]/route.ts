@@ -15,19 +15,22 @@ export const authOptions: AuthOptions = {
   session: {
     strategy: "jwt",
   },
-  callbacks: {
+  events: {
     async signIn({ user, account }) {
       if (!(user as AdapterUser).emailVerified && account?.type === "oauth") {
-        await db.user.update({
-          where: {
-            id: user.id,
-          },
-          data: {
-            emailVerified: new Date(),
-          },
-        });
+        try {
+          await db.user.update({
+            where: {
+              id: user.id,
+            },
+            data: {
+              emailVerified: new Date(),
+            },
+          });
+        } catch (err) {
+          console.log(err);
+        }
       }
-      return true;
     },
   },
   providers: [
