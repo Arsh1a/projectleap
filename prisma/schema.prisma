@@ -64,6 +64,7 @@ model Project {
 
     users User[]
     tasks Task[]
+    tags  Tag[]
 }
 
 model Task {
@@ -74,6 +75,17 @@ model Task {
     dueDate     DateTime?
     priority    Int?
 
+    tags      Tag[]
     projectId String
     project   Project @relation(fields: [projectId], references: [id])
+}
+
+model Tag {
+    id    String @id @default(cuid())
+    name  String
+    color String
+
+    task      Task[]
+    project   Project? @relation(fields: [projectId], references: [id])
+    projectId String?
 }
