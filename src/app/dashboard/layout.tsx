@@ -1,5 +1,5 @@
 import { getServerSession } from "next-auth";
-import DashboardNavbar from "../_components/dashboard/dashboard-navbar";
+import DashboardNavbar from "./dashboard-navbar";
 
 export default async function DashboardLayout({
   children,
@@ -14,6 +14,7 @@ export default async function DashboardLayout({
         profilePicture={session!.user!.image}
         name={session!.user!.name!}
       />
+      {children}
     </div>
   );
 }

@@ -12,8 +12,11 @@ interface Props {
 
 const DashboardNavbar = ({ profilePicture, name }: Props) => {
   return (
-    <nav className="flex items-center border-b px-4 py-2">
+    <nav className="flex items-center border-b gap-10 px-4 py-2">
       <Logo />
+      <ul className="flex items-center text-sm font-medium">
+        <li className="text-muted-foreground">Dashboard</li>
+      </ul>
       <div className="ml-auto flex gap-4 items-center">
         <ProjectPopover />
         <UserDropdown

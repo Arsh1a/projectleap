@@ -7,7 +7,11 @@ export interface InputProps extends React.HTMLAttributes<HTMLDivElement> {}
 const Container = React.forwardRef<HTMLInputElement, InputProps>(
   ({ className, children, ...props }, ref) => {
     return (
-      <div className={cn("container mx-auto", className)} ref={ref} {...props}>
+      <div
+        className={cn("container mx-auto my-10", className)}
+        ref={ref}
+        {...props}
+      >
         {children}
       </div>
     );

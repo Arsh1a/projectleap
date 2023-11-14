@@ -29,7 +29,9 @@ export const ProjectOperationSchema = z.object({
   deadline: dataDate.optional(),
 });
 export type ProjectOperationType = z.infer<typeof ProjectOperationSchema>;
-
+export type ProjectDataType = z.infer<typeof ProjectOperationSchema> & {
+  createdAt: string;
+};
 /* Tags */
 
 const tagName = z.string().min(3).max(12);

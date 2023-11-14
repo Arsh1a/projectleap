@@ -24,7 +24,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 import { signIn } from "next-auth/react";
 import { Github } from "lucide-react";
-import OAuthButtons from "./oauth-buttons";
+import OAuthButtons from "../oauth-buttons";
 import Link from "next/link";
 
 export default function SignUpForm() {
