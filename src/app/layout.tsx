@@ -5,6 +5,7 @@ import "./globals.css";
 import SessionProvider from "@/components/session-provider";
 import ReactQueryProvider from "@/components/react-query-provider";
 import { Toaster } from "@/components/ui/toaster";
+import { ThemeProvider } from "@/components/theme-provider";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -28,8 +29,15 @@ export default async function RootLayout({
       <body className={poppins.className}>
         <SessionProvider session={session}>
           <ReactQueryProvider>
-            {children}
-            <Toaster />
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
+              {children}
+              <Toaster />
+            </ThemeProvider>
           </ReactQueryProvider>
         </SessionProvider>
       </body>

@@ -1,8 +1,5 @@
 "use client";
-
-import { FormEvent, FormHTMLAttributes, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { z } from "zod";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -15,22 +12,19 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { register } from "module";
 import { Button } from "@/components/ui/button";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { postData } from "@/lib/api";
 import { SignUpSchemaType, SignUpSchema } from "@/lib/validation";
 import { useToast } from "@/components/ui/use-toast";
 import { ToastAction } from "@/components/ui/toast";
-import { signIn } from "next-auth/react";
-import { Github } from "lucide-react";
 import OAuthButtons from "../oauth-buttons";
 import Link from "next/link";
 
 export default function SignUpForm() {
   const signupForm = useForm<SignUpSchemaType>({
     resolver: zodResolver(SignUpSchema),
-    defaultValues: { email: "", password: "", name: "" },
+    defaultValues: { email: undefined, password: undefined, name: undefined },
   });
 
   const queryClient = useQueryClient();

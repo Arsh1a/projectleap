@@ -1,15 +1,21 @@
 import { z } from "zod";
 
 const dataId = z.string();
-const dataDate = z.string().transform((str) => new Date(str));
+const dataDate = z.coerce.date();
 
 /*Auth*/
 
 const emailValidation = z.string().email();
-const passwordValidation = z.string().min(8).max(256);
+const passwordValidation = z
+  .string()
+  .min(8, { message: "Password must be longer than 8 characters." })
+  .max(256, { message: "Password must be shorter than 256 characters." });
 
 export const SignUpSchema = z.object({
-  name: z.string().min(3).max(60),
+  name: z
+    .string()
+    .min(3, { message: "Name must be longer than 3 letters." })
+    .max(60, { message: "Name must be shorter than 60 letters." }),
   email: emailValidation,
   password: passwordValidation,
 });
@@ -24,8 +30,14 @@ export type LoginSchemaType = z.infer<typeof LoginSchema>;
 /* Projects */
 
 export const ProjectOperationSchema = z.object({
-  name: z.string().min(3).max(60),
-  description: z.string().min(3).max(60).optional(),
+  name: z
+    .string()
+    .min(3, { message: "Name must be longer than 3 letters." })
+    .max(60, { message: "Name must be shorter than 60 letters." }),
+  description: z.preprocess((desc) => {
+    if (!desc || typeof desc !== "string") return undefined;
+    return desc === "" ? undefined : desc;
+  }, z.string().min(3, { message: "Description must be longer than 3 letters." }).max(60, { message: "Description must be shorter than 60 letters." }).optional()),
   deadline: dataDate.optional(),
 });
 export type ProjectOperationType = z.infer<typeof ProjectOperationSchema>;

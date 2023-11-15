@@ -1,4 +1,5 @@
 "use client";
+import { isoToReadableDate } from "@/lib/utils";
 import { ProjectDataType } from "@/lib/validation";
 import { ColumnDef } from "@tanstack/react-table";
 
@@ -18,19 +19,14 @@ export const projectsDataTableColumns: ColumnDef<ProjectDataType>[] = [
     accessorKey: "createdAt",
     header: "Creation",
     cell: ({ row }) => {
-      const date = new Date(row.getValue("createdAt"));
-      const options = {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-      } as const;
-      const dateFormatter = new Intl.DateTimeFormat("en-US", options);
-
-      return dateFormatter.format(date);
+      return isoToReadableDate(row.getValue("createdAt"));
     },
   },
   {
     accessorKey: "deadline",
     header: "Deadline",
+    cell: ({ row }) => {
+      return isoToReadableDate(row.getValue("deadline"));
+    },
   },
 ];

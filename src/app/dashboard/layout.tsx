@@ -1,5 +1,5 @@
 import { getServerSession } from "next-auth";
-import DashboardNavbar from "./dashboard-navbar";
+import DashboardNavbar from "./(layout)/dashboard-navbar";
 
 export default async function DashboardLayout({
   children,

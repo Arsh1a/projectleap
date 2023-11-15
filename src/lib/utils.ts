@@ -15,3 +15,18 @@ export const getNameInitials = (fullName: string) => {
   }, "");
   return initials;
 };
+
+export const isoToReadableDate = (date: string | null) => {
+  if (!date) {
+    return null;
+  }
+  const isoDate = new Date(date);
+  const options = {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  } as const;
+  const dateFormatter = new Intl.DateTimeFormat("en-US", options);
+
+  return dateFormatter.format(isoDate);
+};

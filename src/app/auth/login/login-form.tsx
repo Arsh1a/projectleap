@@ -24,7 +24,7 @@ export default function LoginForm() {
 
   const signupForm = useForm<LoginSchemaType>({
     resolver: zodResolver(LoginSchema),
-    defaultValues: { email: "", password: "" },
+    defaultValues: { email: undefined, password: undefined },
   });
 
   const router = useRouter();
