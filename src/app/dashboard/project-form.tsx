@@ -128,7 +128,7 @@ export default function ProjectForm() {
         <Button
           type="submit"
           className="w-full"
-          size="lg"
+          size="sm"
           isLoading={mutation.isPending}
         >
           Create
