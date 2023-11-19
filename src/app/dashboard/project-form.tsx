@@ -17,7 +17,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { postData } from "@/lib/api";
 import { ProjectOperationType, ProjectOperationSchema } from "@/lib/validation";
 import { useToast } from "@/components/ui/use-toast";
-import { ToastAction } from "@/components/ui/toast";
 import { format } from "date-fns";
 import {
   Popover,
@@ -28,7 +27,11 @@ import { cn } from "@/lib/utils";
 import { CalendarIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 
-export default function ProjectForm() {
+interface Props {
+  setIsOpen: (boolean: boolean) => void;
+}
+
+const ProjectForm = ({ setIsOpen }: Props) => {
   const form = useForm<ProjectOperationType>({
     resolver: zodResolver(ProjectOperationSchema),
     defaultValues: {
@@ -43,6 +46,8 @@ export default function ProjectForm() {
   const mutation = useMutation({
     mutationFn: (data: ProjectOperationType) => postData("/api/project", data),
     onSuccess: () => {
+      router.refresh();
+      setIsOpen(false);
       toast({
         variant: "default",
         title: "Project created succesfuly.",
@@ -136,4 +141,6 @@ export default function ProjectForm() {
       </form>
     </Form>
   );
-}
+};
+
+export default ProjectForm;

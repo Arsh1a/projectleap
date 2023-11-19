@@ -12,19 +12,21 @@ interface Props {
 
 const DashboardNavbar = ({ profilePicture, name }: Props) => {
   return (
-    <nav className="flex items-center border rounded-full m-10 gap-10 px-4 py-3">
-      <Logo />
-      <ul className="flex items-center text-sm font-medium">
-        <li className="text-muted-foreground">Dashboard</li>
-      </ul>
-      <div className="ml-auto flex gap-4 items-center">
-        <ThemeToggle />
-        <UserDropdown
-          label={name}
-          trigger={
-            <AvatarWwithNameInitials avatar={profilePicture} name={name} />
-          }
-        />
+    <nav className="px-8 pt-8">
+      <div className="flex items-center border rounded-full gap-10 px-6 py-3">
+        <Logo />
+        <ul className="flex items-center text-sm font-medium">
+          <li className="text-muted-foreground">Dashboard</li>
+        </ul>
+        <div className="ml-auto flex gap-4 items-center">
+          <ThemeToggle />
+          <UserDropdown
+            label={name}
+            trigger={
+              <AvatarWwithNameInitials avatar={profilePicture} name={name} />
+            }
+          />
+        </div>
       </div>
     </nav>
   );
