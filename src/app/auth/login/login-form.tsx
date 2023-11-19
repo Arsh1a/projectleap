@@ -19,7 +19,7 @@ import { useState } from "react";
 import OAuthButtons from "../oauth-buttons";
 import Link from "next/link";
 
-export default function LoginForm() {
+const LoginForm = () => {
   const [formLoading, setFormLoading] = useState(false);
 
   const signupForm = useForm<LoginSchemaType>({
@@ -116,4 +116,6 @@ export default function LoginForm() {
       <OAuthButtons />
     </div>
   );
-}
+};
+
+export default LoginForm;

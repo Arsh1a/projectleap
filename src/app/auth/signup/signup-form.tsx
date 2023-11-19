@@ -21,7 +21,7 @@ import { ToastAction } from "@/components/ui/toast";
 import OAuthButtons from "../oauth-buttons";
 import Link from "next/link";
 
-export default function SignUpForm() {
+const SignUpForm = () => {
   const signupForm = useForm<SignUpSchemaType>({
     resolver: zodResolver(SignUpSchema),
     defaultValues: { email: undefined, password: undefined, name: undefined },
@@ -146,4 +146,6 @@ export default function SignUpForm() {
       <OAuthButtons />
     </div>
   );
-}
+};
+
+export default SignUpForm;

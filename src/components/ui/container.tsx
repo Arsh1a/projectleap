@@ -2,9 +2,9 @@ import * as React from "react";
 
 import { cn } from "@/lib/utils";
 
-export interface InputProps extends React.HTMLAttributes<HTMLDivElement> {}
+export interface ContainerProps extends React.HTMLAttributes<HTMLDivElement> {}
 
-const Container = React.forwardRef<HTMLInputElement, InputProps>(
+const Container = React.forwardRef<HTMLInputElement, ContainerProps>(
   ({ className, children, ...props }, ref) => {
     return (
       <div

@@ -4,9 +4,7 @@ import { Github } from "lucide-react";
 import { signIn } from "next-auth/react";
 import React, { useState } from "react";
 
-interface Props {}
-
-const OAuthButtons = ({}: Props) => {
+const OAuthButtons = () => {
   const [isLoading, setIsLoading] = useState(false);
   return (
     <div className="w-full">

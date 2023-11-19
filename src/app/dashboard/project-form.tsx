@@ -27,11 +27,11 @@ import { cn } from "@/lib/utils";
 import { CalendarIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 
-interface Props {
+interface ProjectFormProps {
   setIsOpen: (boolean: boolean) => void;
 }
 
-const ProjectForm = ({ setIsOpen }: Props) => {
+const ProjectForm = ({ setIsOpen }: ProjectFormProps) => {
   const form = useForm<ProjectOperationType>({
     resolver: zodResolver(ProjectOperationSchema),
     defaultValues: {
